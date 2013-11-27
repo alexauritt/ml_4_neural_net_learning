@@ -92,6 +92,26 @@ end
 J = 1 / m * cumulative_costs; 
 
 
+%Theta_1 is 25 x 401
+%drop first column
+theta_1_no_bias = Theta1;
+theta_2_no_bias = Theta2;
+
+theta_1_no_bias(:, [1]) = [];
+theta_2_no_bias(:, [1]) = [];
+
+theta_1_no_bias_squared = theta_1_no_bias .^ 2;
+theta_2_no_bias_squared = theta_2_no_bias .^ 2;
+
+%sum individual rows, then sum all rows
+first_regularization = sum(sum(theta_1_no_bias_squared, 2));
+second_regularization = sum(sum(theta_2_no_bias_squared, 2));
+
+regularization_term = lambda / (2 * m) * (first_regularization + second_regularization);
+
+J = J + regularization_term;
+
+
 
 
 
