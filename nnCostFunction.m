@@ -3,6 +3,15 @@ function [J grad] = nnCostFunction(nn_params, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
                                    X, y, lambda)
+
+fprintf("size of params: %f x %f\n", size(nn_params));
+fprintf("size of input layer size: %f x %f\n", size(input_layer_size));
+fprintf("size of hidden layer size: %f x %f\n", size(hidden_layer_size));
+fprintf("size of num labels: %f x %f\n", size(num_labels));
+fprintf("size of X: %f x %f\n", size(X));
+fprintf("size of y: %f x %f\n", size(y));
+fprintf("size of lambda: %f x %f\n", size(lambda));
+
 %NNCOSTFUNCTION Implements the neural network cost function for a two layer
 %neural network which performs classification
 %   [J grad] = NNCOSTFUNCTON(nn_params, hidden_layer_size, num_labels, ...
@@ -61,6 +70,42 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+
+
+
+
+
+a1_with_bias_unit = [ones(rows(X), 1), X];
+
+z2 = a1_with_bias_unit * Theta1';
+a2 = sigmoid(z2);
+a2_with_bias_unit = [ones(rows(a2), 1), a2];
+z3 = a2_with_bias_unit * Theta2';
+a3 = sigmoid(z3);
+
+% hypothesis is m x 10 matrix -- each row corresponds to bitwise y
+hypothesis = a3;
+
+
+
+cumulative_costs = 0;
+% loop through all training examples
+for i = 1:m
+	hypothesis_row = hypothesis(m,:);
+	
+	% create logical array for current y value
+	% (1 x 10 vector)
+	bitwise_y = (1:10);
+	bitwise_y == y(m);
+
+	cost_row = -bitwise_y .* log(hypothesis_row) .- ((1 .- bitwise_y) .* log(1 - hypothesis_row));
+	single_example_cost = sum(cost_row);
+	cumulative_costs += single_example_cost;
+end
+
+J = cumulative_costs / m; 
+
+
 
 
 
