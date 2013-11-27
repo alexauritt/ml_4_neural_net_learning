@@ -71,7 +71,7 @@ a2_with_bias_unit = [ones(rows(a2), 1), a2];
 z3 = a2_with_bias_unit * Theta2';
 a3 = sigmoid(z3);
 
-% hypothesis is m x 10 matrix -- each row corresponds to bitwise y
+% hypothesis is m x num_lables matrix -- each row corresponds to bitwise y
 hypothesis = a3;
 
 cumulative_costs = 0;
@@ -80,10 +80,10 @@ for i = 1:m
 	hypothesis_row = hypothesis(i,:);
 
 	% create logical array for current y value
-	% (1 x 10 vector)
-	bitwise_y = (1:10) == y(i);
+	% (1 x num_labelsvector)
+	bitwise_y = (1:num_labels) == y(i);
 
-	cost_row = -bitwise_y .* log(hypothesis_row) .- ((1 .- bitwise_y) .* log(1 .- hypothesis_row));
+	cost_row = -1 .* bitwise_y .* log(hypothesis_row) .- ((1 .- bitwise_y) .* log(1 .- hypothesis_row));
 	single_example_cost = sum(cost_row);
 
 	cumulative_costs += single_example_cost;
