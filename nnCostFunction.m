@@ -92,7 +92,7 @@ end
 J = 1 / m * cumulative_costs; 
 
 
-%Theta_1 is 25 x 401
+%regularization
 %drop first column
 theta_1_no_bias = Theta1;
 theta_2_no_bias = Theta2;
@@ -112,25 +112,51 @@ regularization_term = lambda / (2 * m) * (first_regularization + second_regulari
 J = J + regularization_term;
 
 
+%backpropogation algorithm
 
 
+for t = 1:m
+	%column vector for current training example, with bias unit added
+	a1_with_bias = [1, X(t,:)];
+
+	z2 = a1_with_bias * Theta1';
+	
+	%fprintf("size of al_with_bias %f x %f\n", size(a1_with_bias));
+	%fprintf("size of z2 %f x %f\n", size(z2));
+	
+	a2_with_bias = [1, sigmoid(z2)];
+	
+	%fprintf("size of a2 W B' %f x %f\n", size(a2_with_bias));
+
+	z3 = a2_with_bias * Theta2';
+	a3 = sigmoid(z3);
+
+	%fprintf("size of s2_with_bias %f x %f\n", size(a2_with_bias));
+	%fprintf("size of a3 %f x %f\n", size(a3));
 
 
+	bitwise_y = (1:num_labels) == y(t);
+	delta_3 = a3 - bitwise_y;
+	
+	delta_3 = delta_3';
 
+	
+	with_bias = Theta2' * delta_3;
+	drop_bias = with_bias(2:end);	
+	delta_2 = drop_bias .* sigmoidGradient(z2)';
 
+	Theta2_grad = Theta2_grad + delta_3 * a2_with_bias;
+	Theta1_grad = Theta1_grad + delta_2 * a1_with_bias;
 
+	%printf("size of Theta2 %f x %f\n", size(Theta2));
+	%fprintf("size of th2' * del3 %f x %f\n", size(Theta2' * delta_3));
+	%fprintf("size of z2 %f x %f\n", size(z2));
+	%fprintf("size of delta_3 %f x %f\n", size(delta_3));
+	%fprintf("size of delta_2 %f x %f\n", size(delta_2));
+end
 
-
-
-
-
-
-
-
-
-
-
-
+Theta2_grad = Theta2_grad .* (1 / m);
+Theta1_grad = Theta1_grad .* (1 / m);
 % -------------------------------------------------------------
 
 % =========================================================================
